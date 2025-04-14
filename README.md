@@ -1,193 +1,142 @@
-# MyTrello Project
+# MyTrello
 
-[🇧🇷 Português](README.pt-BR.md) | [🇺🇸 English](README.md)
+Um clone do Trello desenvolvido como projeto de estudo, permitindo gerenciamento de quadros, colunas e cards.
 
-A Trello-like task management application built with Spring Boot and React.
+## 🚀 Status do Projeto
 
-## Project Structure
+**Em Desenvolvimento** - O projeto está em fase de desenvolvimento ativo. Novas funcionalidades estão sendo adicionadas regularmente.
 
-```
-mytrello/
-├── backend/                      # Spring Boot backend
-│   ├── src/
-│   │   ├── main/
-│   │   │   ├── java/
-│   │   │   │   └── com/
-│   │   │   │       └── mytrello/
-│   │   │   │           ├── controller/    # REST controllers
-│   │   │   │           ├── dto/           # Data Transfer Objects
-│   │   │   │           ├── model/         # Domain models
-│   │   │   │           ├── repository/    # Data access layer
-│   │   │   │           ├── service/       # Business logic
-│   │   │   │           └── MyTrelloApplication.java
-│   │   │   └── resources/
-│   │   │       └── application.properties # Application configuration
-│   └── pom.xml                  # Maven dependencies
-├── frontend/                    # React frontend
-└── docker-compose.yml          # Docker configuration
-```
+## 📋 Funcionalidades Implementadas
 
-## Architecture
+### Backend
+- ✅ Gerenciamento de Boards (Quadros)
+- ✅ Gerenciamento de Columns (Colunas)
+- ✅ Gerenciamento de Cards
+- ✅ Autenticação Básica
+- ✅ API RESTful
+- ✅ Documentação Swagger
+- ✅ Integração com MongoDB
+- ✅ Health Check e Monitoramento
 
-The application follows a layered architecture pattern with clear separation of concerns:
+### Próximas Funcionalidades
+- [ ] Sistema de Usuários
+- [ ] Etiquetas (Labels)
+- [ ] Comentários
+- [ ] Listas de Verificação
+- [ ] Anexos
+- [ ] Histórico de Atividades
+- [ ] Interface Web
 
-### Backend Architecture
-
-![Backend Architecture](docs/uml/uml.png)
-
-The UML diagram above shows the main components of the system:
-
-1. **Model Layer**: Contains the domain entities
-   - `Board`: Represents a Kanban board
-   - `Column`: Represents a column within a board
-   - `Card`: Represents a task card within a column
-
-2. **DTO Layer**: Data Transfer Objects for request/response handling
-   - Each entity has corresponding DTOs for:
-     - Request: Input validation
-     - Update: Partial updates
-     - Response: API responses
-
-3. **Repository Layer**: Data access interfaces
-   - Extends MongoDB repositories
-   - Provides custom query methods
-   - Handles database operations
-
-4. **Service Layer**: Business logic implementation
-   - Implements business rules
-   - Handles data transformation
-   - Manages transactions
-
-5. **Controller Layer**: REST API endpoints
-   - Handles HTTP requests
-   - Manages input validation
-   - Returns appropriate HTTP responses
-
-### Relationships
-- A Board contains multiple Columns (1:N)
-- A Column contains multiple Cards (1:N)
-- Services use Repositories for data access
-- Controllers use Services for business logic
-- DTOs map to and from domain entities
-
-## Technology Stack
+## 🛠️ Tecnologias Utilizadas
 
 ### Backend
 - Java 17
 - Spring Boot 3.2.3
 - Spring Data MongoDB
-- Spring Validation
-- Lombok
+- Spring Security
+- Spring Actuator
+- Swagger/OpenAPI
+- MongoDB
+- Docker
 - Maven
 
-### Frontend
-- React
-- Material-UI
-- Axios
+## 📦 Estrutura do Projeto
 
-### Database
-- MongoDB
+```
+mytrello/
+├── backend/
+│   ├── src/
+│   │   ├── main/
+│   │   │   ├── java/
+│   │   │   │   └── com/mytrello/
+│   │   │   │       ├── config/
+│   │   │   │       ├── controller/
+│   │   │   │       ├── dto/
+│   │   │   │       ├── model/
+│   │   │   │       ├── repository/
+│   │   │   │       └── service/
+│   │   │   └── resources/
+│   │   └── test/
+│   ├── Dockerfile
+│   └── docker-compose.yml
+└── README.md
+```
 
-## Setup and Running
+## 🔧 Configuração do Ambiente
 
-### Prerequisites
+### Pré-requisitos
 - Java 17
 - Maven
-- Docker and Docker Compose
-- Node.js and npm
+- Docker
+- Docker Compose
 
-### Running the Application
+### Executando Localmente
 
-1. **Start the Database and Services**
+1. Clone o repositório:
 ```bash
-docker-compose up -d
+git clone https://github.com/seu-usuario/mytrello.git
+cd mytrello/backend
 ```
 
-2. **Build and Run Backend**
+2. Execute com Maven:
 ```bash
-cd backend
-mvn clean install
-mvn spring-boot:run
+mvn spring-boot:run -Dspring.profiles.active=dev
 ```
-The backend will start on http://localhost:5000
 
-3. **Build and Run Frontend**
+### Executando com Docker
+
+1. Na pasta do backend:
 ```bash
-cd frontend
-npm install
-npm start
-```
-The frontend will start on http://localhost:3000
-
-## API Endpoints
-
-### Columns
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/columns/{id}` | Get a column by ID |
-| GET | `/api/columns/board/{boardId}` | Get all columns for a board |
-| POST | `/api/columns` | Create a new column |
-| PUT | `/api/columns/{id}` | Update a column |
-| DELETE | `/api/columns/{id}` | Delete a column |
-
-### Request/Response Examples
-
-#### Create Column
-```json
-POST /api/columns
-{
-  "title": "To Do",
-  "boardId": "board123",
-  "order": 1
-}
+docker-compose up --build
 ```
 
-#### Update Column
-```json
-PUT /api/columns/{id}
-{
-  "title": "In Progress",
-  "order": 2
-}
-```
+2. Acesse:
+- API: http://localhost:5000/api
+- Swagger UI: http://localhost:5000/swagger-ui.html
+- Health Check: http://localhost:5000/actuator/health
 
-## Configuration
+## 📝 Documentação da API
 
-### Backend Configuration (application.properties)
-```properties
-server.port=5000
-spring.data.mongodb.host=mongodb
-spring.data.mongodb.port=27017
-spring.data.mongodb.database=mytrello
-```
+A documentação completa da API está disponível através do Swagger UI em:
+http://localhost:5000/swagger-ui.html
 
-### Frontend Configuration
-The frontend is configured to connect to the backend API at `http://localhost:5000/api`
+### Endpoints Principais
 
-## Development
+#### Boards
+- `GET /api/boards` - Listar todos os boards
+- `POST /api/boards` - Criar novo board
+- `GET /api/boards/{id}` - Buscar board específico
+- `PUT /api/boards/{id}` - Atualizar board
+- `DELETE /api/boards/{id}` - Remover board
 
-### Adding New Features
-1. Create the model class in `backend/src/main/java/com/mytrello/model`
-2. Create DTOs in `backend/src/main/java/com/mytrello/dto`
-3. Create the repository interface in `backend/src/main/java/com/mytrello/repository`
-4. Implement the service layer in `backend/src/main/java/com/mytrello/service`
-5. Create the controller in `backend/src/main/java/com/mytrello/controller`
+#### Columns
+- `GET /api/columns` - Listar todas as colunas
+- `POST /api/columns` - Criar nova coluna
+- `GET /api/columns/{id}` - Buscar coluna específica
+- `PUT /api/columns/{id}` - Atualizar coluna
+- `DELETE /api/columns/{id}` - Remover coluna
 
-### Code Style
-- Use proper Java naming conventions
-- Follow REST API best practices
-- Implement proper validation and error handling
-- Use DTOs for request/response handling
-- Document new endpoints and features
+#### Cards
+- `GET /api/cards` - Listar todos os cards
+- `POST /api/cards` - Criar novo card
+- `GET /api/cards/{id}` - Buscar card específico
+- `PUT /api/cards/{id}` - Atualizar card
+- `DELETE /api/cards/{id}` - Remover card
 
-## Error Handling
-The application implements proper error handling:
-- Validation errors return 400 Bad Request
-- Not found errors return 404 Not Found
-- Server errors return 500 Internal Server Error
+## 🤝 Contribuindo
 
-## Security
-- CORS is configured to allow requests from the frontend
-- Input validation is implemented using Jakarta Validation
-- Proper error messages are returned without exposing internal details 
+1. Fork o projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
+
+## 📄 Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+## 📧 Contato
+
+Seu Nome - [@seu-twitter](https://twitter.com/seu-twitter) - email@exemplo.com
+
+Link do Projeto: [https://github.com/seu-usuario/mytrello](https://github.com/seu-usuario/mytrello) 

@@ -1,0 +1,147 @@
+@startuml MyTrello Class Diagram
+
+package "Model" {
+  class Board {
+    - id: String
+    - title: String
+    - description: String
+    - order: Integer
+    - createdAt: LocalDateTime
+    - updatedAt: LocalDateTime
+  }
+
+  class Column {
+    - id: String
+    - title: String
+    - boardId: String
+    - order: Integer
+    - createdAt: LocalDateTime
+    - updatedAt: LocalDateTime
+  }
+
+  class Card {
+    - id: String
+    - content: String
+    - columnId: String
+    - order: Integer
+    - createdAt: LocalDateTime
+    - updatedAt: LocalDateTime
+  }
+}
+
+package "DTO" {
+  class BoardDTO {
+    + Request
+    + Update
+    + Response
+  }
+
+  class ColumnDTO {
+    + Request
+    + Update
+    + Response
+  }
+
+  class CardDTO {
+    + Request
+    + Update
+    + Response
+  }
+}
+
+package "Repository" {
+  interface BoardRepository {
+    + findAll(): List<Board>
+    + findById(id: String): Optional<Board>
+    + save(board: Board): Board
+    + deleteById(id: String): void
+  }
+
+  interface ColumnRepository {
+    + findByBoardIdOrderByOrderAsc(boardId: String): List<Column>
+    + findById(id: String): Optional<Column>
+    + save(column: Column): Column
+    + deleteById(id: String): void
+  }
+
+  interface CardRepository {
+    + findByColumnIdOrderByOrderAsc(columnId: String): List<Card>
+    + findById(id: String): Optional<Card>
+    + save(card: Card): Card
+    + deleteById(id: String): void
+  }
+}
+
+package "Service" {
+  class BoardService {
+    + getBoard(id: String): BoardDTO.Response
+    + getAllBoards(): List<BoardDTO.Response>
+    + createBoard(request: BoardDTO.Request): BoardDTO.Response
+    + updateBoard(id: String, update: BoardDTO.Update): BoardDTO.Response
+    + deleteBoard(id: String): void
+  }
+
+  class ColumnService {
+    + getColumn(id: String): ColumnDTO.Response
+    + getColumnsByBoard(boardId: String): List<ColumnDTO.Response>
+    + createColumn(request: ColumnDTO.Request): ColumnDTO.Response
+    + updateColumn(id: String, update: ColumnDTO.Update): ColumnDTO.Response
+    + deleteColumn(id: String): void
+  }
+
+  class CardService {
+    + getCard(id: String): CardDTO.Response
+    + getCardsByColumn(columnId: String): List<CardDTO.Response>
+    + createCard(request: CardDTO.Request): CardDTO.Response
+    + updateCard(id: String, update: CardDTO.Update): CardDTO.Response
+    + deleteCard(id: String): void
+  }
+}
+
+package "Controller" {
+  class BoardController {
+    + getBoard(id: String): ResponseEntity<BoardDTO.Response>
+    + getAllBoards(): ResponseEntity<List<BoardDTO.Response>>
+    + createBoard(request: BoardDTO.Request): ResponseEntity<BoardDTO.Response>
+    + updateBoard(id: String, update: BoardDTO.Update): ResponseEntity<BoardDTO.Response>
+    + deleteBoard(id: String): ResponseEntity<Void>
+  }
+
+  class ColumnController {
+    + getColumn(id: String): ResponseEntity<ColumnDTO.Response>
+    + getColumnsByBoard(boardId: String): ResponseEntity<List<ColumnDTO.Response>>
+    + createColumn(request: ColumnDTO.Request): ResponseEntity<ColumnDTO.Response>
+    + updateColumn(id: String, update: ColumnDTO.Update): ResponseEntity<ColumnDTO.Response>
+    + deleteColumn(id: String): ResponseEntity<Void>
+  }
+
+  class CardController {
+    + getCard(id: String): ResponseEntity<CardDTO.Response>
+    + getCardsByColumn(columnId: String): ResponseEntity<List<CardDTO.Response>>
+    + createCard(request: CardDTO.Request): ResponseEntity<CardDTO.Response>
+    + updateCard(id: String, update: CardDTO.Update): ResponseEntity<CardDTO.Response>
+    + deleteCard(id: String): ResponseEntity<Void>
+  }
+}
+
+' Relationships
+Board "1" -- "*" Column : contains >
+Column "1" -- "*" Card : contains >
+
+BoardRepository ..> Board : manages
+ColumnRepository ..> Column : manages
+CardRepository ..> Card : manages
+
+BoardService --> BoardRepository : uses
+ColumnService --> ColumnRepository : uses
+CardService --> CardRepository : uses
+
+BoardController --> BoardService : uses
+ColumnController --> ColumnService : uses
+CardController --> CardService : uses
+
+BoardDTO ..> Board : maps
+ColumnDTO ..> Column : maps
+CardDTO ..> Card : maps
+
+@enduml 

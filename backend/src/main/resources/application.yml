@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: mytrello
+  
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    disable-swagger-default-url: true
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  show-actuator: false
+  packages-to-scan: com.mytrello.controller 

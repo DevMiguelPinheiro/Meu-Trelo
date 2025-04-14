@@ -1,22 +1,45 @@
 import axios from 'axios';
 
+const BASE_URL = process.env.NODE_ENV === 'production' 
+  ? process.env.REACT_APP_API_URL 
+  : '/api';
+
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000/api',
+  baseURL: BASE_URL,
   headers: {
     'Content-Type': 'application/json',
-    'Accept': 'application/json'
   },
-  withCredentials: true
 });
 
-// Add response interceptor for error handling
-api.interceptors.response.use(
-  response => response,
-  error => {
-    console.error('API Error:', error.response?.data || error.message);
+api.interceptors.request.use(
+  (config) => {
+    console.log('Request:', config.method.toUpperCase(), config.url, config.data);
+    return config;
+  },
+  (error) => {
+    console.error('Request Error:', error);
     return Promise.reject(error);
   }
 );
+
+api.interceptors.response.use(
+  (response) => {
+    console.log('Response:', response.status, response.data);
+    return response;
+  },
+  (error) => {
+    if (error.response) {
+      console.error('Response Error:', error.response.status, error.response.data);
+    } else if (error.request) {
+      console.error('Request Error:', error.request);
+    } else {
+      console.error('Error:', error.message);
+    }
+    return Promise.reject(error);
+  }
+);
+
+export default api;
 
 // Board operations
 export const getBoards = async () => {

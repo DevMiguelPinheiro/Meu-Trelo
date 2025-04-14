@@ -1,0 +1,169 @@
+@startuml Backend Architecture
+
+' Estilos
+skinparam class {
+    BackgroundColor LightBlue
+    ArrowColor Black
+    BorderColor DarkBlue
+}
+
+skinparam package {
+    BackgroundColor LightGreen
+    BorderColor DarkGreen
+}
+
+' Pacotes
+package "com.mytrello" {
+    package "config" {
+        class MongoConfig {
+            + mongoClient(): MongoClient
+            + mongoTemplate(): MongoTemplate
+        }
+    }
+
+    package "model" {
+        class Board {
+            - id: String
+            - title: String
+            - description: String
+            - ownerId: String
+            - memberIds: List<String>
+            - createdAt: LocalDateTime
+            - updatedAt: LocalDateTime
+        }
+
+        class Column {
+            - id: String
+            - title: String
+            - boardId: String
+            - order: Integer
+            - createdAt: LocalDateTime
+            - updatedAt: LocalDateTime
+        }
+
+        class Card {
+            - id: String
+            - title: String
+            - description: String
+            - columnId: String
+            - order: Integer
+            - createdAt: LocalDateTime
+            - updatedAt: LocalDateTime
+        }
+    }
+
+    package "dto" {
+        class BoardDTO {
+            + Request
+            + Update
+            + Response
+        }
+
+        class ColumnDTO {
+            + Request
+            + Update
+            + Response
+        }
+
+        class CardDTO {
+            + Request
+            + Update
+            + Response
+        }
+    }
+
+    package "repository" {
+        interface BoardRepository {
+            + findByOwnerId(String): List<Board>
+            + findByMemberIdsContaining(String): List<Board>
+        }
+
+        interface ColumnRepository {
+            + findByBoardIdOrderByOrderAsc(String): List<Column>
+        }
+
+        interface CardRepository {
+            + findByColumnIdOrderByOrderAsc(String): List<Card>
+        }
+    }
+
+    package "service" {
+        class BoardService {
+            + getBoard(String): BoardDTO.Response
+            + getBoardsByOwner(String): List<BoardDTO.Response>
+            + getBoardsByMember(String): List<BoardDTO.Response>
+            + createBoard(BoardDTO.Request): BoardDTO.Response
+            + updateBoard(String, BoardDTO.Update): BoardDTO.Response
+            + deleteBoard(String): void
+        }
+
+        class ColumnService {
+            + getColumn(String): ColumnDTO.Response
+            + getColumnsByBoard(String): List<ColumnDTO.Response>
+            + createColumn(ColumnDTO.Request): ColumnDTO.Response
+            + updateColumn(String, ColumnDTO.Update): ColumnDTO.Response
+            + deleteColumn(String): void
+        }
+
+        class CardService {
+            + getCard(String): CardDTO.Response
+            + getCardsByColumn(String): List<CardDTO.Response>
+            + createCard(CardDTO.Request): CardDTO.Response
+            + updateCard(String, CardDTO.Update): CardDTO.Response
+            + deleteCard(String): void
+        }
+    }
+
+    package "controller" {
+        class BoardController {
+            + getBoard(String): ResponseEntity<BoardDTO.Response>
+            + getBoardsByOwner(String): ResponseEntity<List<BoardDTO.Response>>
+            + getBoardsByMember(String): ResponseEntity<List<BoardDTO.Response>>
+            + createBoard(BoardDTO.Request): ResponseEntity<BoardDTO.Response>
+            + updateBoard(String, BoardDTO.Update): ResponseEntity<BoardDTO.Response>
+            + deleteBoard(String): ResponseEntity<Void>
+        }
+
+        class ColumnController {
+            + getColumn(String): ResponseEntity<ColumnDTO.Response>
+            + getColumnsByBoard(String): ResponseEntity<List<ColumnDTO.Response>>
+            + createColumn(ColumnDTO.Request): ResponseEntity<ColumnDTO.Response>
+            + updateColumn(String, ColumnDTO.Update): ResponseEntity<ColumnDTO.Response>
+            + deleteColumn(String): ResponseEntity<Void>
+        }
+
+        class CardController {
+            + getCard(String): ResponseEntity<CardDTO.Response>
+            + getCardsByColumn(String): ResponseEntity<List<CardDTO.Response>>
+            + createCard(CardDTO.Request): ResponseEntity<CardDTO.Response>
+            + updateCard(String, CardDTO.Update): ResponseEntity<CardDTO.Response>
+            + deleteCard(String): ResponseEntity<Void>
+        }
+    }
+}
+
+' Relacionamentos
+Board "1" -- "*" Column
+Column "1" -- "*" Card
+
+BoardRepository ..> Board
+ColumnRepository ..> Column
+CardRepository ..> Card
+
+BoardService ..> BoardRepository
+ColumnService ..> ColumnRepository
+CardService ..> CardRepository
+
+BoardController ..> BoardService
+ColumnController ..> ColumnService
+CardController ..> CardService
+
+BoardService ..> BoardDTO
+ColumnService ..> ColumnDTO
+CardService ..> CardDTO
+
+MongoConfig ..> Board
+MongoConfig ..> Column
+MongoConfig ..> Card
+
+@enduml 
