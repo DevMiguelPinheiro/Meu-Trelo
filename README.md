@@ -1,5 +1,7 @@
 # MyTrello Project
 
+[🇧🇷 Português](README.pt-BR.md) | [🇺🇸 English](README.md)
+
 A Trello-like task management application built with Spring Boot and React.
 
 ## Project Structure
