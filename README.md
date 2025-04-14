@@ -25,6 +25,49 @@ mytrello/
 └── docker-compose.yml          # Docker configuration
 ```
 
+## Architecture
+
+The application follows a layered architecture pattern with clear separation of concerns:
+
+### Backend Architecture
+
+![Backend Architecture](docs/uml/uml.png)
+
+The UML diagram above shows the main components of the system:
+
+1. **Model Layer**: Contains the domain entities
+   - `Board`: Represents a Kanban board
+   - `Column`: Represents a column within a board
+   - `Card`: Represents a task card within a column
+
+2. **DTO Layer**: Data Transfer Objects for request/response handling
+   - Each entity has corresponding DTOs for:
+     - Request: Input validation
+     - Update: Partial updates
+     - Response: API responses
+
+3. **Repository Layer**: Data access interfaces
+   - Extends MongoDB repositories
+   - Provides custom query methods
+   - Handles database operations
+
+4. **Service Layer**: Business logic implementation
+   - Implements business rules
+   - Handles data transformation
+   - Manages transactions
+
+5. **Controller Layer**: REST API endpoints
+   - Handles HTTP requests
+   - Manages input validation
+   - Returns appropriate HTTP responses
+
+### Relationships
+- A Board contains multiple Columns (1:N)
+- A Column contains multiple Cards (1:N)
+- Services use Repositories for data access
+- Controllers use Services for business logic
+- DTOs map to and from domain entities
+
 ## Technology Stack
 
 ### Backend
